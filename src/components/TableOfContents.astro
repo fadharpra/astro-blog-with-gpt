@@ -18,26 +18,64 @@ for (const h of filtered) {
 }
 ---
 {grouped.length > 0 && (
-  <aside class="hidden lg:block w-60 shrink-0 sticky top-24 mt-20 text-sm leading-6 p-4 border border-gray-300 rounded-xl shadow-md bg-gray-50 dark:bg-gray-800">
-    <ul class="space-y-2">
-      {grouped.map(section => (
-        <li>
-          <a href={`#${section.slug}`} class="font-medium hover:underline">
-            {section.text}
-          </a>
-          {section.children.length > 0 && (
-            <ul class="mt-1 pl-4 space-y-1 text-gray-500/90">
-              {section.children.map(sub => (
-                <li>
-                  <a href={`#${sub.slug}`} class="hover:underline">
-                    {sub.text}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          )}
-        </li>
-      ))}
-    </ul>
+  <aside class="hidden lg:block w-60 shrink-0 sticky top-24 mt-20 text-sm leading-6">
+    <nav
+      id="toc"
+      aria-label="Table of contents"
+      class="bg-white border border-gray-200 p-4 rounded-xl shadow-sm max-h-[80vh] overflow-auto"
+    >
+      <ul class="space-y-2">
+        {grouped.map(section => (
+          <li>
+            <a
+              href={`#${section.slug}`}
+              class="block py-1 border-l-2 border-transparent pl-2 font-medium hover:underline"
+            >
+              {section.text}
+            </a>
+            {section.children.length > 0 && (
+              <ul class="mt-1 pl-4 space-y-1 text-gray-500/90">
+                {section.children.map(sub => (
+                  <li>
+                    <a
+                      href={`#${sub.slug}`}
+                      class="block py-1 border-l-2 border-transparent pl-2 hover:underline"
+                    >
+                      {sub.text}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', () => {
+        const toc = document.getElementById('toc');
+        if (!toc) return;
+        const links = Array.from(toc.querySelectorAll('a'));
+        const headings = links
+          .map((l) => document.getElementById(l.getAttribute('href').slice(1)))
+          .filter(Boolean);
+        function activate(el) {
+          links.forEach((a) => a.classList.remove('border-blue-600', 'font-semibold'));
+          if (el) el.classList.add('border-blue-600', 'font-semibold');
+        }
+        function onScroll() {
+          const offset = 120;
+          let current = links[0];
+          for (let i = 0; i < headings.length; i++) {
+            const top = headings[i].getBoundingClientRect().top;
+            if (top - offset <= 0) current = links[i];
+            else break;
+          }
+          activate(current);
+        }
+        document.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      });
+    </script>
   </aside>
 )}
