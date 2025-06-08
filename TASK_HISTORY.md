@@ -30,3 +30,10 @@ Catatan ringkas perubahan yang dilakukan oleh Codex.
 - Added left border indicator and bold font for the active link
 - Navigation wrapped in `<nav>` with `aria-label` for better accessibility
 - Sidebar remains sticky and scrollable on large screens
+
+## [2025-06-08] Refine ToC Styling and Add Scrollspy
+- Adjusted sticky positioning with `top-[9rem]` to align ToC with content body
+- Wrapped ToC in `<nav aria-label="Table of contents">` for accessibility
+- Added scrollspy using `IntersectionObserver` to highlight current section in view
+- Applied active styling with `border-l-2 border-blue-600`, `font-semibold`, and `bg-blue-50`
+- Styled ToC container with `bg-white`, `border`, `rounded-xl`, `p-4`, `shadow-sm`, and scrollable height
