@@ -18,28 +18,28 @@ for (const h of filtered) {
 }
 ---
 {grouped.length > 0 && (
-  <aside class="hidden lg:block w-60 shrink-0 sticky top-[9rem] mt-20 text-sm leading-6">
+  <aside class="hidden lg:block w-60 shrink-0 text-xs leading-4"> 
     <nav
       id="toc"
       aria-label="Table of contents"
-      class="bg-white border border-gray-200 p-4 rounded-xl shadow-sm max-h-[80vh] overflow-auto"
+      class="bg-white border border-gray-200 p-3 rounded-xl shadow-sm max-h-[80vh] overflow-auto" 
     >
-      <ul class="space-y-2">
+      <ul class="space-y-1"> 
         {grouped.map(section => (
           <li>
             <a
               href={`#${section.slug}`}
-              class="block py-1 border-l-2 border-transparent pl-2 font-medium hover:underline rounded"
+              class="block py-0.5 border-l-2 border-transparent pl-2 font-medium hover:underline rounded text-gray-800" 
             >
               {section.text}
             </a>
             {section.children.length > 0 && (
-              <ul class="mt-1 pl-4 space-y-1 text-gray-500/90">
+              <ul class="mt-0.5 pl-4 space-y-0.5 text-gray-600">
                 {section.children.map(sub => (
                   <li>
                     <a
                       href={`#${sub.slug}`}
-                      class="block py-1 border-l-2 border-transparent pl-2 hover:underline rounded"
+                      class="block py-0.5 border-l-2 border-transparent pl-2 hover:underline rounded"
                     >
                       {sub.text}
                     </a>

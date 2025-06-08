@@ -15,11 +15,11 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 	<head>
 		<BaseHead title={title} description={description} />
 		<style>
-			main {
+			/* main {
 				width: calc(100% - 2em);
 				max-width: 100%;
 				margin: 0;
-			}
+			} */
 			.hero-image {
 				width: 100%;
 			}
@@ -30,9 +30,9 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 				box-shadow: var(--box-shadow);
 			}
 			.prose {
-				width: 720px;
-				max-width: calc(100% - 2em);
-				margin: auto;
+				width: 100%; /* Diubah dari 720px menjadi 100% */
+				max-width: 100%; /* Diubah untuk memenuhi grid */
+				margin: 0; /* Dihilangkan margin auto */
 				padding: 1em;
 				color: rgb(var(--gray-dark));
 			}
@@ -52,6 +52,15 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 			.last-updated-on {
 				font-style: italic;
 			}
+			/* Tambahan untuk sticky ToC */
+			.sticky-sidebar {
+				position: sticky;
+				top: 1rem;
+				align-self: start;
+				height: fit-content;
+				max-height: calc(100vh - 8rem);
+				overflow-y: auto;
+			}
 		</style>
 	</head>
 
@@ -59,28 +68,36 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 		<Header />
                 <main>
                         <article class="mx-auto max-w-6xl px-4">
+                                {/* Bagian header: hero image, judul, dan tanggal */}
                                 <div class="hero-image">
                                         {heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
                                 </div>
-                                <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_250px] lg:gap-8">
+                                <div class="title">
+                                        <div class="date">
+                                                <FormattedDate date={pubDate} />
+                                                {
+                                                        updatedDate && (
+                                                                <div class="last-updated-on">
+                                                                        Last updated on <FormattedDate date={updatedDate} />
+                                                                </div>
+                                                        )
+                                                }
+                                        </div>
+                                        <h1>{title}</h1>
+                                        <hr />
+                                </div>
+
+                                {/* Grid untuk konten dan ToC */}
+                                <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_250px] gap-8">
+                                        {/* Konten utama */}
                                         <div class="prose">
-                                                <div class="title">
-                                                        <div class="date">
-                                                                <FormattedDate date={pubDate} />
-                                                                {
-                                                                        updatedDate && (
-                                                                                <div class="last-updated-on">
-                                                                                        Last updated on <FormattedDate date={updatedDate} />
-                                                                                </div>
-                                                                        )
-                                                                }
-                                                        </div>
-                                                        <h1>{title}</h1>
-                                                        <hr />
-                                                </div>
                                                 <slot name="content" />
                                         </div>
-                                        <slot name="toc" />
+                                        
+                                        {/* Sidebar untuk ToC - ditempatkan di kolom kanan */}
+                                        <div class="sticky-sidebar hidden lg:block">
+                                                <slot name="toc" />
+                                        </div>
                                 </div>
                         </article>
                 </main>

@@ -1,7 +1,13 @@
 export default {
-  content: ['./src/**/*.{astro,html,js,jsx,ts,tsx,md,mdx}'],
+  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
-    extend: {},
+    extend: {
+      gridTemplateColumns: {
+        'content-toc': 'minmax(0, 1fr) 250px',
+      }
+    }
   },
-  plugins: [],
-};
+  plugins: [
+    require('@tailwindcss/typography'),
+  ],
+}

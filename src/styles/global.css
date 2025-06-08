@@ -44,11 +44,19 @@ body {
 	line-height: 1.7;
 }
 main {
+  width: calc(100% - 2em);
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 1em 0;
+}
+
+/* main {
 	width: 720px;
 	max-width: calc(100% - 2em);
 	margin: auto;
 	padding: 3em 1em;
-}
+} */
+ 
 h1,
 h2,
 h3,
@@ -156,4 +164,17 @@ hr {
 
 html {
     scroll-behavior: smooth;
+}
+
+.sticky {
+  position: sticky;
+}
+
+.top-24 {
+  top: 6rem;
+}
+
+/* Untuk layout grid */
+.grid-cols-\[minmax\(0\,1fr\)_250px\] {
+  grid-template-columns: minmax(0, 1fr) 250px;
 }
