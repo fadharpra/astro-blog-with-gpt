@@ -1,0 +1,43 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+const { headings = [] } = Astro.props as { headings: Heading[] };
+
+const filtered = headings.filter(h => h.depth === 2 || h.depth === 3);
+
+const grouped: { depth: number; slug: string; text: string; children: Heading[] }[] = [];
+for (const h of filtered) {
+  if (h.depth === 2) {
+    grouped.push({ ...h, children: [] });
+  } else if (h.depth === 3 && grouped.length > 0) {
+    grouped[grouped.length - 1].children.push(h);
+  }
+}
+---
+{grouped.length > 0 && (
+  <aside class="hidden lg:block w-60 shrink-0 sticky top-24 text-sm leading-6">
+    <ul class="space-y-2">
+      {grouped.map(section => (
+        <li>
+          <a href={`#${section.slug}`} class="font-medium hover:underline">
+            {section.text}
+          </a>
+          {section.children.length > 0 && (
+            <ul class="mt-1 pl-4 space-y-1 text-gray-500/90">
+              {section.children.map(sub => (
+                <li>
+                  <a href={`#${sub.slug}`} class="hover:underline">
+                    {sub.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
+        </li>
+      ))}
+    </ul>
+  </aside>
+)}
