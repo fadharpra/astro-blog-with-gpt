@@ -18,13 +18,13 @@ for (const h of filtered) {
 }
 ---
 {grouped.length > 0 && (
-  <aside class="hidden lg:block w-60 shrink-0 sticky top-[9rem] mt-20 text-sm leading-6">
+  <aside class="hidden lg:block w-60 shrink-0 sticky top-[9rem] mt-0 text-sm leading-5">
     <nav
       id="toc"
       aria-label="Table of contents"
       class="bg-white border border-gray-200 p-4 rounded-xl shadow-sm max-h-[80vh] overflow-auto"
     >
-      <ul class="space-y-2">
+      <ul class="space-y-1">
         {grouped.map(section => (
           <li>
             <a

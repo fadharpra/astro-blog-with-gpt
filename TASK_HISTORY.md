@@ -37,3 +37,8 @@ Catatan ringkas perubahan yang dilakukan oleh Codex.
 - Added scrollspy using `IntersectionObserver` to highlight current section in view
 - Applied active styling with `border-l-2 border-blue-600`, `font-semibold`, and `bg-blue-50`
 - Styled ToC container with `bg-white`, `border`, `rounded-xl`, `p-4`, `shadow-sm`, and scrollable height
+
+## [2025-06-08] Adjust ToC Position and Spacing
+- Moved ToC upward by removing extra top margin so it aligns with the post title
+- Tightened spacing using `space-y-1` and `leading-5`
+- Modified `src/components/TableOfContents.astro`
