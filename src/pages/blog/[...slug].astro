@@ -19,10 +19,6 @@ const { Content, headings } = await render(post);
 ---
 
 <BlogPost {...post.data}>
-        <div class="lg:flex lg:gap-8">
-                <div class="flex-1">
-                        <Content />
-                </div>
-                <TableOfContents {headings} />
-        </div>
+        <Content slot="content" />
+        <TableOfContents slot="toc" {headings} />
 </BlogPost>
