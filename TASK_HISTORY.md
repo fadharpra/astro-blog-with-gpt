@@ -24,3 +24,9 @@ Catatan ringkas perubahan yang dilakukan oleh Codex.
   250px sidebar on large screens
 - Adjusted `src/pages/blog/[...slug].astro` to use the new slots
 - ToC remains hidden on mobile and no longer causes horizontal scrolling
+## [2025-06-08] Enhance Table of Contents with Scrollspy
+- Restyled ToC container to match OpenAI Codex look using white background, rounded border, shadow, and max height
+- Implemented a scrollspy script that highlights the active section while scrolling
+- Added left border indicator and bold font for the active link
+- Navigation wrapped in `<nav>` with `aria-label` for better accessibility
+- Sidebar remains sticky and scrollable on large screens
