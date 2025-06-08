@@ -1,7 +1,9 @@
 ---
 import { type CollectionEntry, getCollection } from 'astro:content';
 import BlogPost from '../../layouts/BlogPost.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
 import { render } from 'astro:content';
+import '../../styles/tailwind.css';
 
 export async function getStaticPaths() {
 	const posts = await getCollection('blog');
@@ -13,9 +15,14 @@ export async function getStaticPaths() {
 type Props = CollectionEntry<'blog'>;
 
 const post = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
 ---
 
 <BlogPost {...post.data}>
-	<Content />
+        <div class="lg:flex lg:gap-8">
+                <div class="flex-1">
+                        <Content />
+                </div>
+                <TableOfContents {headings} />
+        </div>
 </BlogPost>
