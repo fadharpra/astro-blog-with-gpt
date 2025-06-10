@@ -12,95 +12,204 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
 ---
 
 <html lang="en">
-	<head>
-		<BaseHead title={title} description={description} />
-		<style>
-			/* main {
-				width: calc(100% - 2em);
-				max-width: 100%;
-				margin: 0;
-			} */
-			.hero-image {
-				width: 100%;
-			}
-			.hero-image img {
-				display: block;
-				margin: 0 auto;
-				border-radius: 12px;
-				box-shadow: var(--box-shadow);
-			}
-			.prose {
-				width: 100%; /* Diubah dari 720px menjadi 100% */
-				max-width: 100%; /* Diubah untuk memenuhi grid */
-				margin: 0; /* Dihilangkan margin auto */
-				padding: 1em;
-				color: rgb(var(--gray-dark));
-			}
-			.title {
-				margin-bottom: 1em;
-				padding: 1em 0;
-				text-align: center;
-				line-height: 1;
-			}
-			.title h1 {
-				margin: 0 0 0.5em 0;
-			}
-			.date {
-				margin-bottom: 0.5em;
-				color: rgb(var(--gray));
-			}
-			.last-updated-on {
-				font-style: italic;
-			}
-			/* Tambahan untuk sticky ToC */
-			.sticky-sidebar {
-				position: sticky;
-				top: 1rem;
-				align-self: start;
-				height: fit-content;
-				max-height: calc(100vh - 8rem);
-				overflow-y: auto;
-			}
-		</style>
-	</head>
+    <head>
+        <BaseHead title={title} description={description} />
+        <style>
+            /* main {
+                width: calc(100% - 2em);
+                max-width: 100%;
+                margin: 0;
+            } */
+            .hero-image {
+                width: 100%;
+            }
+            .hero-image img {
+                display: block;
+                margin: 0 auto;
+                border-radius: 12px;
+                box-shadow: var(--box-shadow);
+            }
+            .prose {
+                width: 100%; /* Diubah dari 720px menjadi 100% */
+                max-width: 100%; /* Diubah untuk memenuhi grid */
+                margin: 0; /* Dihilangkan margin auto */
+                padding: 1em;
+                color: rgb(var(--gray-dark));
+            }
+            .title {
+                margin-bottom: 1em;
+                padding: 1em 0;
+                text-align: center;
+                line-height: 1;
+            }
+            .title h1 {
+                margin: 0 0 0.5em 0;
+            }
+            .date {
+                margin-bottom: 0.5em;
+                color: rgb(var(--gray));
+            }
+            .last-updated-on {
+                font-style: italic;
+            }
+            /* Tambahan untuk sticky ToC */
+            .sticky-sidebar {
+                position: sticky;
+                top: 1rem; /* Sesuaikan jika perlu, ini membuat sidebar stick di 1rem dari atas */
+                align-self: start;
+                height: fit-content;
+                max-height: calc(100vh - 8rem); /* Sesuaikan jika perlu, 8rem adalah tinggi header + footer + padding */
+                overflow-y: auto;
+            }
 
-	<body>
-		<Header />
-                <main>
-                        <article class="mx-auto max-w-6xl px-4">
-                                {/* Bagian header: hero image, judul, dan tanggal */}
-                                <div class="hero-image">
-                                        {heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
-                                </div>
-                                <div class="title">
-                                        <div class="date">
-                                                <FormattedDate date={pubDate} />
-                                                {
-                                                        updatedDate && (
-                                                                <div class="last-updated-on">
-                                                                        Last updated on <FormattedDate date={updatedDate} />
-                                                                </div>
-                                                        )
-                                                }
-                                        </div>
-                                        <h1>{title}</h1>
-                                        <hr />
-                                </div>
+            /* CSS untuk highlight link ToC */
+            .toc-active {
+                border-left-color: var(--accent) !important; /* Warna accent dari global.css */
+                color: var(--accent) !important;
+                font-weight: 700; /* Tebalkan teks saat aktif */
+            }
+        </style>
+    </head>
 
-                                {/* Grid untuk konten dan ToC */}
-                                <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_250px] gap-8">
-                                        {/* Konten utama */}
-                                        <div class="prose">
-                                                <slot name="content" />
-                                        </div>
-                                        
-                                        {/* Sidebar untuk ToC - ditempatkan di kolom kanan */}
-                                        <div class="sticky-sidebar hidden lg:block">
-                                                <slot name="toc" />
-                                        </div>
+    <body>
+        <Header />
+        <main>
+            <article class="mx-auto max-w-6xl px-4">
+                {/* Bagian header: hero image, judul, dan tanggal */}
+                <div class="hero-image">
+                    {heroImage && <Image width={1020} height={510} src={heroImage} alt="" />}
+                </div>
+                <div class="title">
+                    <div class="date">
+                        <FormattedDate date={pubDate} />
+                        {
+                            updatedDate && (
+                                <div class="last-updated-on">
+                                    Last updated on <FormattedDate date={updatedDate} />
                                 </div>
-                        </article>
-                </main>
-		<Footer />
-	</body>
+                            )
+                        }
+                    </div>
+                    <h1>{title}</h1>
+                    <hr />
+                </div>
+
+                {/* Grid untuk konten dan ToC */}
+                <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_250px] gap-8">
+                    {/* Konten utama */}
+                    <div class="prose">
+                        <slot name="content" />
+                    </div>
+                    
+                    {/* Sidebar untuk ToC - ditempatkan di kolom kanan */}
+                    <div class="sticky-sidebar hidden lg:block">
+                        <slot name="toc" />
+                    </div>
+                </div>
+            </article>
+        </main>
+        <Footer />
+
+        <script is:inline>
+            // --- SCROLLSPY LOGIC START ---
+            const HEADER_HEIGHT = 100; // Sesuaikan dengan tinggi header Anda (dari global.css scroll-margin-top)
+
+            const observerOptions = {
+                root: null, // Mengamati viewport
+                // rootMargin: 'TopOffset RightOffset BottomOffset LeftOffset'
+                // TopOffset negatif akan memotong bagian atas viewport untuk intersection.
+                // -HEADER_HEIGHTpx 0px -50% 0px berarti:
+                // - Memotong HEADER_HEIGHT dari atas viewport (mengabaikan intersection di balik fixed header)
+                // - Memotong 50% dari bawah viewport (fokus pada paruh atas layar)
+                rootMargin: `-${HEADER_HEIGHT}px 0px -50% 0px`,
+                threshold: 0, // Amati bahkan jika sedikit terlihat
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                let activeHeadingFound = false;
+
+                entries.forEach((entry) => {
+                    const id = entry.target.getAttribute('id');
+                    const tocLink = document.querySelector(`#toc a[href="#${id}"]`);
+
+                    if (tocLink) {
+                        if (entry.isIntersecting) {
+                            // Cek apakah heading ini lebih ke atas dari heading yang sudah aktif
+                            // Atau jika ini adalah heading pertama yang intersect di area aktif
+                            if (!activeHeadingFound) {
+                                // Hapus highlight dari semua link ToC
+                                document.querySelectorAll('#toc a').forEach(link => {
+                                    link.classList.remove('toc-active');
+                                });
+                                // Tambahkan highlight ke link ToC yang sesuai
+                                tocLink.classList.add('toc-active');
+                                activeHeadingFound = true; // Setel true agar tidak menyorot heading lain di bawahnya
+                            }
+                        } else {
+                            // Jika heading keluar dari intersection area, hapus highlight
+                            tocLink.classList.remove('toc-active');
+                        }
+                    }
+                });
+
+                // Fallback: Jika tidak ada heading yang intersect di area aktif (misal di paling atas halaman)
+                // dan ada link ToC, pastikan link pertama di highlight.
+                // Atau biarkan tidak ada yang terhighlight jika tidak di bagian heading.
+                const firstTocLink = document.querySelector('#toc a');
+                if (!activeHeadingFound && window.scrollY < HEADER_HEIGHT && firstTocLink) {
+                    document.querySelectorAll('#toc a').forEach(link => {
+                        link.classList.remove('toc-active');
+                    });
+                    // firstTocLink.classList.add('toc-active'); // uncomment this if you want to highlight the first one by default at the very top
+                }
+            }, observerOptions);
+
+            // Amati semua heading h2 dan h3 (sesuaikan jika perlu)
+            // Penting: Pastikan heading-heading ini memiliki atribut `id`
+            document.querySelectorAll('h2[id], h3[id]').forEach((heading) => {
+                observer.observe(heading);
+            });
+
+            // Initial check on page load to set the correct active heading
+            // This is useful if the user loads the page somewhere in the middle.
+            const checkInitialActiveHeading = () => {
+                const headings = Array.from(document.querySelectorAll('h2[id], h3[id]'));
+                let currentActiveHeading = null;
+
+                for (let i = headings.length - 1; i >= 0; i--) {
+                    const heading = headings[i];
+                    const rect = heading.getBoundingClientRect();
+                    // Check if the heading's top is above or at the offset point
+                    // and it's still visible on screen
+                    if (rect.top <= HEADER_HEIGHT && rect.bottom > 0) {
+                        currentActiveHeading = heading;
+                        break;
+                    }
+                }
+
+                document.querySelectorAll('#toc a').forEach(link => {
+                    link.classList.remove('toc-active');
+                });
+
+                if (currentActiveHeading) {
+                    const id = currentActiveHeading.getAttribute('id');
+                    const tocLink = document.querySelector(`#toc a[href="#${id}"]`);
+                    if (tocLink) {
+                        tocLink.classList.add('toc-active');
+                    }
+                } else {
+                    // If no heading is past the offset (e.g., at the very top of the page)
+                    // Optionally highlight the first ToC link
+                    // const firstLink = document.querySelector('#toc a');
+                    // if (firstLink) firstLink.classList.add('toc-active');
+                }
+            };
+
+            // Run initial check after page load
+            window.addEventListener('load', checkInitialActiveHeading);
+            // Run check on scroll
+            window.addEventListener('scroll', checkInitialActiveHeading);
+            // --- SCROLLSPY LOGIC END ---
+        </script>
+    </body>
 </html>

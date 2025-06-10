@@ -51,96 +51,119 @@ for (const h of filtered) {
         ))}
       </ul>
     </nav>
-    <script is:inline>
-      document.addEventListener('DOMContentLoaded', () => {
-        const toc = document.getElementById('toc');
-        if (!toc) return;
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const toc = document.getElementById('toc');
+    if (!toc) return;
 
-        // Dapatkan semua link ToC dan heading terkait
-        const links = Array.from(toc.querySelectorAll('a'));
-        const headings = links
-          .map(link => {
-            const slug = link.getAttribute('href').slice(1);
-            return document.getElementById(slug);
-          })
-          .filter(Boolean);
+    // Get all ToC links and corresponding headings
+    const links = Array.from(toc.querySelectorAll('a'));
+    const headings = links
+      .map(link => {
+        const slug = link.getAttribute('href').slice(1);
+        return document.getElementById(slug);
+      })
+      .filter(Boolean);
 
-        if (headings.length === 0) return;
+    if (headings.length === 0) return;
 
-        // Hitung tinggi header fixed (jika ada)
-        const header = document.querySelector('header');
-        const headerHeight = header ? header.offsetHeight + 20 : 0; // +20 untuk padding
+    // Track last active heading
+    let lastActive = null;
 
-        // Fungsi untuk set active link
-        function setActive(id) {
-          links.forEach(link => 
-            link.classList.remove('border-blue-600', 'font-semibold', 'bg-blue-50')
-          );
-          const activeLink = toc.querySelector(`a[href="#${id}"]`);
-          if (activeLink) activeLink.classList.add('border-blue-600', 'font-semibold', 'bg-blue-50');
-        }
-
-        // Pendekatan alternatif: Scroll-based detection
-        let lastActive = headings[0].id;
-        function updateActiveHeading() {
-          let currentActive = null;
-          
-          // Cari heading yang paling dekat dengan atas viewport (dengan offset header)
-          for (const heading of headings) {
-            const rect = heading.getBoundingClientRect();
-            if (rect.top <= headerHeight + 50) {
-              currentActive = heading;
-            } else {
-              break; // Keluar loop setelah melewati heading teratas
-            }
-          }
-
-          // Update active link jika berubah
-          if (currentActive && currentActive.id !== lastActive) {
-            setActive(currentActive.id);
-            lastActive = currentActive.id;
-          }
-        }
-
-        function updateActiveHeading() {
-  let closestHeading = null;
-  let closestDistance = Infinity;
-
-  // Cari heading dengan posisi terdekat ke atas viewport (dengan offset header)
-  headings.forEach(heading => {
-    const rect = heading.getBoundingClientRect();
-    const distance = Math.abs(rect.top - headerHeight);
-
-    console.log(
-      `Heading: ${heading.id} | Jarak: ${distance.toFixed(1)}px`
-    );
-
-    if (distance < closestDistance) {
-      closestDistance = distance;
-      closestHeading = heading;
+    // Calculate header height (with responsive update)
+    function getHeaderHeight() {
+      const header = document.querySelector('header');
+      return header ? header.offsetHeight + 20 : 0; // +20 for padding
     }
-  });
 
-  // Update active link jika berubah
-  if (closestHeading && closestHeading.id !== lastActive) {
-    console.log(`🔵 Heading terdekat: ${closestHeading.id}`);
-    setActive(closestHeading.id);
-    lastActive = closestHeading.id;
-  }
-}
-        // Jalankan pertama kali
-        updateActiveHeading();
-
-        // Tambahkan event listener untuk scroll
-        window.addEventListener('scroll', updateActiveHeading);
-        window.addEventListener('resize', updateActiveHeading); // Handle resize
-
-        // Optional: Hapus event listener saat komponen unmount (untuk SPA)
-        document.addEventListener('astro:before-swap', () => {
-          window.removeEventListener('scroll', updateActiveHeading);
-          window.removeEventListener('resize', updateActiveHeading);
-        });
+    // Set active link
+    function setActive(id) {
+      links.forEach(link => {
+        link.classList.remove(
+          'border-blue-600',
+          'font-semibold',
+          'bg-blue-50'
+        );
       });
-    </script>
+      const activeLink = toc.querySelector(`a[href="#${id}"]`);
+      if (activeLink) {
+        activeLink.classList.add(
+          'border-blue-600',
+          'font-semibold',
+          'bg-blue-50'
+        );
+      }
+    }
+
+    // Improved active heading detection
+    function updateActiveHeading() {
+      const headerHeight = getHeaderHeight();
+      let currentActive = null;
+      let minDistance = Infinity;
+
+      // Find closest heading above viewport center
+      headings.forEach(heading => {
+        const rect = heading.getBoundingClientRect();
+        const distance = rect.top - headerHeight;
+        
+        // Prefer headings above center line
+        if (distance < 0) {
+          const absDistance = Math.abs(distance);
+          if (absDistance < minDistance) {
+            minDistance = absDistance;
+            currentActive = heading;
+          }
+        }
+      });
+
+      // If no heading above center, get first visible
+      if (!currentActive) {
+        for (const heading of headings) {
+          const rect = heading.getBoundingClientRect();
+          if (rect.top >= headerHeight) {
+            currentActive = heading;
+            break;
+          }
+        }
+      }
+
+      // Fallback to last heading
+      if (!currentActive && headings.length > 0) {
+        currentActive = headings[headings.length - 1];
+      }
+
+      // Update active link
+      if (currentActive && currentActive.id !== lastActive) {
+        setActive(currentActive.id);
+        lastActive = currentActive.id;
+      }
+    }
+
+    // Initial update
+    updateActiveHeading();
+
+    // Throttle scroll events
+    let isScrolling = false;
+    function handleScroll() {
+      if (!isScrolling) {
+        window.requestAnimationFrame(() => {
+          updateActiveHeading();
+          isScrolling = false;
+        });
+        isScrolling = true;
+      }
+    }
+
+    // Add event listeners
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('resize', updateActiveHeading);
+
+    // Cleanup
+    document.addEventListener('astro:before-swap', () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('resize', updateActiveHeading);
+    });
+  });
+</script>
   </aside>
 )}
