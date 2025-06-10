@@ -200,8 +200,8 @@ const { title, description, pubDate, updatedDate, heroImage } = Astro.props;
                 } else {
                     // If no heading is past the offset (e.g., at the very top of the page)
                     // Optionally highlight the first ToC link
-                    // const firstLink = document.querySelector('#toc a');
-                    // if (firstLink) firstLink.classList.add('toc-active');
+                    const firstLink = document.querySelector('#toc a');
+                    if (firstLink) firstLink.classList.add('toc-active');
                 }
             };
 
