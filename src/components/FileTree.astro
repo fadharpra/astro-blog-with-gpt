@@ -1,0 +1,89 @@
+---
+import { Folder, FileText, FileCode, FileJson } from "lucide-react";
+
+type FileNode = {
+  name: string;
+  isFolder: boolean;
+  depth: number;
+  children: FileNode[];
+};
+
+const { raw = "" } = Astro.props;
+
+function getIcon(name: string, isFolder: boolean) {
+  if (isFolder) return Folder;
+  if (name.endsWith('.astro')) return FileCode;
+  if (name.endsWith('.ts') || name.endsWith('.tsx')) return FileCode;
+  if (name.endsWith('.json')) return FileJson;
+  if (name.endsWith('.md')) return FileText;
+  return FileText;
+}
+
+function parseFileTree(raw: string): FileNode[] {
+  const lines = raw
+    .trim()
+    .split('\n')
+    .map((line) => {
+      const match = line.match(/^(\s*)- (.+)/);
+      if (!match) return null;
+      const depth = Math.floor((match[1] || '').length / 2);
+      const name = match[2].trim();
+      const isFolder = name.endsWith('/');
+      return { name, isFolder, depth, children: [] } as FileNode;
+    })
+    .filter((x): x is FileNode => !!x);
+  const root: FileNode[] = [];
+  const stack: FileNode[] = [];
+  for (const node of lines) {
+    while (stack.length > 0 && stack[stack.length - 1].depth >= node.depth) {
+      stack.pop();
+    }
+    if (stack.length === 0) {
+      root.push(node);
+    } else {
+      stack[stack.length - 1].children.push(node);
+    }
+    stack.push(node);
+  }
+  return root;
+}
+
+const tree = parseFileTree(raw);
+
+function renderNode(node: FileNode) {
+  const Icon = getIcon(node.name, node.isFolder);
+  return (
+    <li style={"margin-left: " + (node.depth * 1.25) + "rem"}>
+      <span class="inline-block align-middle mr-1" style="width: 1em;">
+        <Icon size={16} />
+      </span>
+      {node.name}
+      {node.children && node.children.length > 0 && (
+        <ul>
+          {node.children.map(renderNode)}
+        </ul>
+      )}
+    </li>
+  );
+}
+---
+
+<ul class="filetree">
+  {tree.map(renderNode)}
+</ul>
+
+<style>
+  .filetree {
+    font-family: monospace;
+    font-size: 0.5rem;
+    margin-top: 2em;
+    
+    line-height: 1.5;
+    padding-left: 0;
+    list-style: none;
+  }
+  .filetree li {
+    white-space: nowrap;
+    margin: 0.2rem 0;
+  }
+</style>

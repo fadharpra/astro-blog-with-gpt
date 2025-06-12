@@ -15,6 +15,17 @@
 	--box-shadow:
 		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
 		0 16px 32px rgba(var(--gray), 33%);
+	--sl-text-2xs: .75rem;
+    --sl-text-xs: .8125rem;
+    --sl-text-sm: .875rem;
+    --sl-text-base: 1rem;
+    --sl-text-lg: 1.125rem;
+    --sl-text-xl: 1.25rem;
+    --sl-text-2xl: 1.5rem;
+    --sl-text-3xl: 1.8125rem;
+    --sl-text-4xl: 2.1875rem;
+    --sl-text-5xl: 2.625rem;
+    --sl-text-6xl: 4rem;
 }
 @font-face {
 	font-family: 'Atkinson';
@@ -108,10 +119,12 @@ a:hover {
 	color: var(--accent);
 }
 p {
+	margin-top: 0em;
 	margin-bottom: 1em;
 }
 .prose p {
-	margin-bottom: 2em;
+	margin-top: 0em;
+	margin-bottom: 1em;
 }
 textarea {
 	width: 100%;
@@ -144,7 +157,7 @@ blockquote {
 	border-left: 4px solid var(--accent);
 	padding: 0 0 0 20px;
 	margin: 0px;
-	font-size: 1.333em;
+	font-size: var(--sl-text-base);
 }
 hr {
 	border: none;
@@ -193,3 +206,18 @@ html {
 .grid-cols-\[minmax\(0\,1fr\)_250px\] {
   grid-template-columns: minmax(0, 1fr) 250px;
 }
+
+  .filetree {
+    font-family: monospace;
+    font-size: var(--sl-text-xs);
+    margin-top: 2em;
+    margin-left: 0em;
+    line-height: 1.5;
+    padding-left: 0;
+    list-style: none;
+  }
+  .filetree li {
+    white-space: nowrap;
+    margin: 0.2rem 0;
+  }
+  

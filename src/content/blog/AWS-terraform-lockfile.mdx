@@ -6,6 +6,8 @@ heroImage: '../../assets/blog-placeholder-5.jpg'
 tags: ["Terraform", "AWS", "DevOps", "Infra"]
 ---
 
+import FileTree from '../../components/FileTree.tsx'
+
 > Kalau pernah ngerasain `terraform apply` rame-rame bareng 2-3 orang sekaligus, tapi gak ada remote state... selamat! Kamu udah unlock salah satu mode hardcore di dunia DevOps 😂
 
 ## 🎯 Latar Belakang
@@ -19,11 +21,23 @@ Jadi, gua putusin buat ngerapiin sedikit. Target:
 - **Tanpa** pake DynamoDB (karena mager setupnya, dan ternyata udah gak perlu lagi)
 
 ## 🧱 Struktur Proyek
+<FileTree raw={`
 - terraform-aws-project/
   - providers.tf
-  - main.tf
-  - variables.tf
+  - main.ts
+  - variables.ts
   - backend-config.hcl
+  - README.md
+  - modules/
+    - network/
+      - main.tf
+      - variables.tf
+    - compute/
+      - main.tf
+      - outputs.tf
+`} />
+
+
 
 ## ⚙️ Konfigurasi Backend S3 dengan `use_lockfile`
 Pastiin bucket `fadharpra-terraform-state-bucket` (atau bucket kalian sendiri) udah dibuat terlebih dulu, karena file `key` seperti `lockfile-test/terraform.tfstate` akan disimpan di dalam bucket tersebut dan dibaca saat Terraform apply.
